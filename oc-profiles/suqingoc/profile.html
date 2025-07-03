@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>苏晴 | OC角色展示</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=ZCOOL+XiaoWei&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --deep-ocean: #0a192f;
+            --moonlight: #64feda;
+            --sea-blue: #1d4e89;
+            --sand: #e6be8a;
+            --shell-pink: #f8a5c2;
+            --misty-blue: #a8d0e6;
+            --glow-blue: #00eeff;
+            --dusk-purple: #6a5acd;
+            --ocean-gradient: linear-gradient(135deg, var(--deep-ocean), #0c2d48);
+            --transition: all 0.4s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--ocean-gradient);
+            color: var(--misty-blue);
+            font-family: 'Noto Serif SC', serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+            line-height: 1.8;
+            background-attachment: fixed;
+            position: relative;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 10;
+            padding: 0 20px;
+        }
+
+        /* 导航栏 */
+        .nav-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(10, 25, 47, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(100, 254, 218, 0.2);
+            z-index: 100;
+            transition: var(--transition);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .nav-brand {
+            color: var(--moonlight);
+            font-size: 1.5rem;
+            font-weight: 700;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: var(--transition);
+        }
+
+            .nav-brand:hover {
+                color: var(--shell-pink);
+            }
+
+            .nav-brand i {
+                color: var(--shell-pink);
+                transition: var(--transition);
+            }
+
+            .nav-brand:hover i {
+                transform: rotate(15deg) scale(1.1);
+            }
+
+        .nav-links {
+            display: flex;
+            gap: 25px;
+            list-style: none;
+            transition: var(--transition);
+        }
+
+        .nav-link, .character-btn {
+            color: var(--misty-blue);
+            text-decoration: none;
+            transition: var(--transition);
+            position: relative;
+            font-weight: 500;
+        }
+
+        .character-btn {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+            .character-btn .btn-icon {
+                width: 28px;
+                height: 28px;
+                border-radius: 50%;
+                background: linear-gradient(45deg, var(--moonlight), var(--shell-pink));
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 0.9rem;
+                box-shadow: 0 0 10px rgba(100, 254, 218, 0.5);
+                margin-right: 5px;
+            }
+
+            .nav-link:hover, .character-btn:hover {
+                color: var(--moonlight);
+            }
+
+            .nav-link:after, .character-btn:after {
+                content: "";
+                position: absolute;
+                bottom: -5px;
+                left: 0;
+                width: 0;
+                height: 2px;
+                background: var(--moonlight);
+                transition: var(--transition);
+            }
+
+            .nav-link:hover:after, .character-btn:hover:after {
+                width: 100%;
+            }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--moonlight);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+            .mobile-menu-btn:hover {
+                color: var(--shell-pink);
+            }
+
+        /* 海洋装饰元素 */
+        .ocean-decoration {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 1;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .bubble {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(100, 254, 218, 0.1);
+            animation: float 15s infinite linear;
+            box-shadow: 0 0 10px rgba(100, 254, 218, 0.3);
+            filter: blur(0.5px);
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) scale(0.2);
+                opacity: 0;
+            }
+
+            10% {
+                opacity: 0.3;
+            }
+
+            90% {
+                opacity: 0.2;
+            }
+
+            100% {
+                transform: translateY(-100px) scale(1.5);
+                opacity: 0;
+            }
+        }
+
+        .wave {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100px;
+            background-size: cover;
+            background-repeat: no-repeat;
+            z-index: 2;
+            opacity: 0.7;
+            animation: wave 20s infinite linear;
+        }
+
+            .wave:nth-child(2) {
+                bottom: 20px;
+                animation-duration: 25s;
+                opacity: 0.5;
+            }
+
+        @keyframes wave {
+            0% {
+                background-position-x: 0;
+            }
+
+            100% {
+                background-position-x: 1200px;
+            }
+        }
+
+        /* 角色信息样式 */
+        .character-info-container {
+            background: rgba(13, 27, 53, 0.7);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
+            position: relative;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(100, 254, 218, 0.2);
+            margin-bottom: 80px;
+            z-index: 10;
+            animation: fadeIn 1s ease-in-out;
+            padding: 60px;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeIn 1s ease forwards 0.6s;
+        }
+
+        .character-name {
+            font-size: clamp(2rem, 6vw, 3rem);
+            margin-bottom: 25px;
+            color: var(--moonlight);
+            position: relative;
+            display: inline-block;
+        }
+
+            .character-name:after {
+                content: "";
+                position: absolute;
+                bottom: -12px;
+                left: 0;
+                width: 120px;
+                height: 4px;
+                background: var(--moonlight);
+                border-radius: 3px;
+            }
+
+        .character-title {
+            font-size: clamp(1.5rem, 4vw, 2rem);
+            color: var(--shell-pink);
+            margin-bottom: 35px;
+            font-family: 'ZCOOL XiaoWei', serif;
+            letter-spacing: 2px;
+        }
+
+        .character-desc {
+            margin-bottom: 40px;
+            font-size: 1.2rem;
+            line-height: 1.9;
+            color: var(--misty-blue);
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.8s ease forwards 0.8s;
+        }
+
+
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.8s ease forwards 1s;
+        }
+
+        .info-card {
+            background: rgba(29, 78, 137, 0.3);
+            border-radius: 15px;
+            padding: 25px;
+            border: 1px solid rgba(100, 254, 218, 0.1);
+            transition: var(--transition);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+            .info-card:hover {
+                transform: translateY(-8px);
+                border-color: var(--moonlight);
+                box-shadow: 0 10px 25px rgba(100, 254, 218, 0.25);
+                background: rgba(29, 78, 137, 0.4);
+            }
+
+            .info-card h3 {
+                color: var(--moonlight);
+                margin-bottom: 18px;
+                font-size: 1.5rem;
+                display: flex;
+                align-items: center;
+                gap: 12px;
+            }
+
+                .info-card h3 i {
+                    margin-right: 0;
+                    font-size: 1.4rem;
+                }
+
+            .info-card ul {
+                list-style: none;
+                padding-left: 10px;
+            }
+
+            .info-card li {
+                margin-bottom: 12px;
+                position: relative;
+                padding-left: 25px;
+                font-size: 1.1rem;
+            }
+
+                .info-card li:before {
+                    content: "•";
+                    color: var(--moonlight);
+                    position: absolute;
+                    left: 0;
+                    font-size: 1.6rem;
+                }
+
+        /* 技能展示 */
+        .skills-container {
+            margin-top: 30px;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.8s ease forwards 1.2s;
+        }
+
+        .skill {
+            margin-bottom: 30px;
+        }
+
+            .skill:nth-child(1) {
+                animation: fadeInUp 0.8s ease forwards 1.4s;
+            }
+
+            .skill:nth-child(2) {
+                animation: fadeInUp 0.8s ease forwards 1.6s;
+            }
+
+            .skill:nth-child(3) {
+                animation: fadeInUp 0.8s ease forwards 1.8s;
+            }
+
+        .skill-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .skill-icon {
+            width: 55px;
+            height: 55px;
+            background: rgba(29, 78, 137, 0.5);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 18px;
+            font-size: 1.6rem;
+            color: var(--moonlight);
+            border: 1px solid var(--moonlight);
+            transition: var(--transition);
+            box-shadow: 0 0 10px rgba(100, 254, 218, 0.2);
+        }
+
+        .skill:hover .skill-icon {
+            transform: rotate(15deg) scale(1.1);
+            box-shadow: 0 0 20px rgba(100, 254, 218, 0.4);
+            background: rgba(100, 254, 218, 0.2);
+        }
+
+        .skill-name {
+            font-size: 1.6rem;
+            color: var(--moonlight);
+        }
+
+        .skill-desc {
+            padding-left: 73px;
+            font-size: 1.15rem;
+            line-height: 1.8;
+        }
+
+        /* 视觉锚点 */
+        .visual-anchors {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 40px;
+            margin-top: 80px;
+            margin-bottom: 80px;
+        }
+
+        .anchor-card {
+            background: rgba(13, 27, 53, 0.7);
+            border-radius: 18px;
+            padding: 40px;
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(100, 254, 218, 0.1);
+            transition: var(--transition);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+            .anchor-card:hover {
+                transform: translateY(-12px);
+                border-color: var(--moonlight);
+                box-shadow: 0 15px 30px rgba(100, 254, 218, 0.3);
+                background: rgba(13, 27, 53, 0.8);
+            }
+
+            .anchor-card h3 {
+                color: var(--moonlight);
+                font-size: 1.9rem;
+                margin-bottom: 25px;
+                text-align: center;
+                position: relative;
+            }
+
+                .anchor-card h3:after {
+                    content: "";
+                    position: absolute;
+                    bottom: -12px;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    width: 90px;
+                    height: 4px;
+                    background: var(--moonlight);
+                    border-radius: 3px;
+                }
+
+            .anchor-card p {
+                margin-bottom: 18px;
+                font-size: 1.15rem;
+                line-height: 1.8;
+            }
+
+        /* 回到顶部按钮 */
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            background: rgba(10, 25, 47, 0.8);
+            border: 1px solid var(--moonlight);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--moonlight);
+            text-decoration: none;
+            font-size: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+            z-index: 99;
+            transform: translateY(20px);
+        }
+
+            .back-to-top.visible {
+                opacity: 1;
+                visibility: visible;
+                transform: translateY(0);
+            }
+
+            .back-to-top:hover {
+                background: var(--moonlight);
+                color: var(--deep-ocean);
+                transform: translateY(-5px);
+                box-shadow: 0 0 20px rgba(100, 254, 218, 0.5);
+            }
+
+        /* 响应式设计 */
+        @media (max-width: 1024px) {
+            .character-info-container {
+                padding: 40px;
+            }
+        }
+
+        @media (max-width: 900px) {
+            .nav-links {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background: rgba(10, 25, 47, 0.95);
+                padding: 20px;
+                gap: 20px;
+                backdrop-filter: blur(10px);
+            }
+
+                .nav-links.active {
+                    display: flex;
+                }
+
+            .mobile-menu-btn {
+                display: block;
+            }
+
+            .character-btn {
+                margin-bottom: 10px;
+            }
+
+            .character-info-container {
+                padding: 30px 25px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .character-name {
+                font-size: 2.5rem;
+            }
+
+            .character-title {
+                font-size: 1.8rem;
+            }
+
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .character-info-container {
+                padding: 30px 20px;
+            }
+
+            .character-image-container {
+                margin: 30px auto 30px;
+            }
+        }
+
+        /* 页脚样式 */
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--misty-blue);
+            font-size: 1rem;
+            margin-top: 50px;
+            border-top: 1px solid rgba(100, 254, 218, 0.2);
+            position: relative;
+            z-index: 10;
+            background: rgba(10, 25, 47, 0.8);
+            backdrop-filter: blur(10px);
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeIn 1s ease forwards 1.5s;
+        }
+
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <div class="nav-container" id="nav-container">
+        <nav class="nav">
+            <a href="#" class="nav-brand">
+                <i class="fas fa-moon"></i>
+                苏晴
+            </a>
+            <ul class="nav-links" id="nav-links">
+                <li><a href="https://stellalee-office.pages.dev/OCzs/orginal oc.html" class="nav-link">返回互动</a></li>
+                <li><a href="#about" class="nav-link">角色档案</a></li>
+                <li><a href="#visual" class="nav-link">视觉元素</a></li>
+                <li><a href="#costume" class="nav-link">角色服饰</a></li>
+                <li><a href="#card" class="nav-link">小卡展示</a></li>
+            </ul>
+            <button class="mobile-menu-btn" id="mobile-menu-btn">
+                <i class="fas fa-bars"></i>
+            </button>
+        </nav>
+    </div>
+
+    <!-- 海洋装饰元素 -->
+    <div class="ocean-decoration" id="ocean-bg"></div>
+    <div class="wave" style="background-image: url('data:image/svg+xml;utf8,<svg viewBox=" 0 0 1200 120" xmlns="http://www.w3.org/2000/svg" fill="%231d4e89"><path d="M0 0v46.29c47.79 22.2 103.59 32.17 158 28 70.36-5.37 136.33-33.31 206.8-37.5 73.84-4.36 147.54 16.88 218.2 35.26 69.27 18 138.3 24.88 209.4 13.08 36.15-6 69.85-17.84 104.45-29.34C989.49 25 1113-14.29 1200 52.47V0z" opacity=".25" /></svg>"></div>
+    <div class="wave" style="background-image: url('data:image/svg+xml;utf8,<svg viewBox=" 0 0 1200 120" xmlns="http://www.w3.org/2000/svg" fill="%2364feda"><path d="M0 0v46.29c47.79 22.2 103.59 32.17 158 28 70.36-5.37 136.33-33.31 206.8-37.5 73.84-4.36 147.54 16.88 218.2 35.26 69.27 18 138.3 24.88 209.4 13.08 36.15-6 69.85-17.84 104.45-29.34C989.49 25 1113-14.29 1200 52.47V0z" opacity=".25" /></svg>"></div>
+
+    <main class="container">
+        <!-- 顶部留出空白 -->
+        <div style="height: 110px;"></div>
+
+        <section id="about" class="character-info-container">
+            <h2 class="character-name">苏晴</h2>
+            <p class="character-title">月下拾遗者</p>
+
+            <div class="character-desc">
+                来自临海小镇"汐湾镇"的19岁少女，拥有与海洋和月光的神秘联系。继承了祖母对海洋的敬畏，苏晴在深夜的海岸线徘徊，收集被潮汐带来的小物件，守护着海洋的平衡。她纤细的身体蕴藏着与海洋共鸣的力量，血液中流淌着月汐的神秘能量。
+            </div>
+
+            <div class="info-grid">
+                <div class="info-card">
+                    <h3><i class="fas fa-info-circle"></i>基础信息</h3>
+                    <ul>
+                        <li><strong>生日:</strong> 8月23日</li>
+                        <li><strong>性别:</strong> 女</li>
+                        <li><strong>血型:</strong> AB型</li>
+                        <li><strong>身高:</strong> 162cm</li>
+                        <li><strong>年龄:</strong> 19岁</li>
+                        <li><strong>星座:</strong> 处女座</li>
+                        <li><strong>出生地:</strong> 汐湾镇</li>
+                    </ul>
+                </div>
+
+                <div class="info-card">
+                    <h3><i class="fas fa-heart"></i>特质与信仰</h3>
+                    <ul>
+                        <li><strong>血液特质:</strong> 月汐之血 (月光下泛蓝荧光)</li>
+                        <li><strong>信仰:</strong> 自然灵性 (万物有灵)</li>
+                        <li><strong>癖好:</strong> 收集海岸小物、深夜观潮</li>
+                        <li><strong>在意:</strong> 海洋平衡、灯塔之谜、祖母回忆</li>
+                        <li><strong>厌恶:</strong> 破坏海洋生态、否定神秘者</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div id="skills" class="skills-container">
+                <h3 style="color: var(--moonlight); font-size: 1.8rem; margin-bottom: 20px; border-bottom: 2px solid var(--moonlight); padding-bottom: 10px; display: inline-block;">特殊能力与装备</h3>
+
+                <div class="skill">
+                    <div class="skill-header">
+                        <div class="skill-icon">
+                            <i class="fas fa-moon"></i>
+                        </div>
+                        <div class="skill-name">星辉感知</div>
+                    </div>
+                    <div class="skill-desc">
+                        能察觉月光与星光能量的细微流动，感知自然界的能量变化。在满月之夜，这种能力达到顶峰，甚至能预见潮汐的异常变化。
+                    </div>
+                </div>
+
+                <div class="skill">
+                    <div class="skill-header">
+                        <div class="skill-icon">
+                            <i class="fas fa-water"></i>
+                        </div>
+                        <div class="skill-name">潮汐信标</div>
+                    </div>
+                    <div class="skill-desc">
+                        祖母留下的磨砂星芒信封，遇水显现发光飘带指引方向。在迷雾中会自动生成荧光路线，引导苏晴穿越危险海域。
+                    </div>
+                </div>
+
+                <div class="skill">
+                    <div class="skill-header">
+                        <div class="skill-icon">
+                            <i class="fas fa-seedling"></i>
+                        </div>
+                        <div class="skill-name">萤藻共生</div>
+                    </div>
+                    <div class="skill-desc">
+                        可短暂激活荧光海草，用于缠绕目标或照明。需要接触海水充能，在月光下效果增强。缠绕强度与月光亮度成正比。
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="visual" class="visual-anchors">
+            <div class="anchor-card">
+                <h3>关键视觉元素</h3>
+                <p><strong>雾霭蓝发色 & 深空灰瞳色：</strong> 视觉上强化她与海洋/夜空的连接，发尾的雾霭蓝如深海暮色交融，深空灰瞳孔在光线下透出暴风雨前海面的蓝调。</p>
+                <p><strong>荧光海草手环：</strong> 缠绕左手腕的活性化海草，在黑暗环境中发出柔和的蓝绿光芒，成为角色的标志性视觉符号。</p>
+                <p><strong>月汐之血：</strong> 在月光或潮汐影响下，血液泛起极淡的蓝荧光，暗示她身体内蕴含的神秘海洋能量。</p>
+            </div>
+
+            <div class="anchor-card">
+                <h3>情感锚点</h3>
+                <p><strong>祖母的旧怀表：</strong> 黄铜外壳刻有简易船锚纹，不仅是情感纽带，也是能量探测器。当靠近异常能量源时，表壳会微微发热。</p>
+                <p><strong>海岸收集品：</strong> 贝壳、特殊石子等小物件记录着每次赶海的记忆，每个物品都关联着一段海洋故事。</p>
+                <p><strong>灯塔之谜：</strong> 祖母曾是灯塔看守人，灯塔中隐藏着家族与海洋的秘密，驱动苏晴探索未知。</p>
+            </div>
+        </section>
+
+        <section id="costume" class="visual-anchors">
+            <div class="anchor-card">
+                <h3>角色服饰</h3>
+                <img src="./苏晴-站拍展示.png" class="character-image" style="max-width:1000px; max-height:1000px; margin: 0 auto" oncontextmenu="return false;"  draggable="false">
+                <p>· 常服：潮汐旅人 (Tide Traveler)</p>
+                <p>这套常服试图打破场景边界：既可以是都市街头的随性穿搭，也能呼应海边漫步的浪漫情境。它让 “潮汐” 不再局限于海洋，而是成为一种“流动的生活意象”
+                    —— 穿着者如同 “潮汐旅人”，将海洋的诗意与探索的勇气，融入每一步足迹里。</p>
+                <img src="./苏晴-哥特Lolita站拍.png" class="character-image" style="max-width:1000px; max-height:1000px; margin: 0 auto" oncontextmenu="return false;"  draggable="false">
+                <p>· 哥特风Lolita：月潮挽歌 (Moon Tide Elegy)</p>
+                <p>当她在满月之夜立于礁石之上，裙摆随海风翻涌如泣血浪花，此刻的苏晴既是悼念海洋的送葬者，亦是唤醒潮汐的黑暗圣女。</p>
+            </div>
+        </section>
+
+        <section id="card" class="visual-anchors">
+            <div class="anchor-card">
+                <h3>小卡展示</h3>
+                <img src="./苏晴-小卡展示.png" class="character-image" style="max-width:1000px; max-height:1000px; margin: 0 auto" oncontextmenu="return false;"  draggable="false">
+                <p>·「海洋叙事的装饰画」 (常服：潮汐旅人)</p>
+                <p>这是一场 “海洋对旅人的温柔收纳” —— 所有海洋符号化作画框的拼图，把穿着牛仔的少女，永远封存在属于她的潮汐叙事里。</p>
+
+                <img src="./苏晴-Lolita-小卡展示.png" class="character-image" style="max-width:1000px; max-height:1000px; margin: 0 auto" oncontextmenu="return false;"  draggable="false">
+                <p>·「永夜潮汐圣龛」 (哥特风Lolita：月潮挽歌)</p>
+                <p>这是一场 “海洋对旅人的温柔收纳” —— 所有海洋符号化作画框的拼图，把穿着牛仔的少女，永远封存在属于她的潮汐叙事里。</p>
+
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>© 2025 StellaLee.森颖颖</p>
+        <p>- 苏晴OC -</p>
+    </footer>
+
+    <!-- 回到顶部按钮 -->
+    <a href="#" class="back-to-top" id="back-to-top">
+        <i class="fas fa-arrow-up"></i>
+    </a>
+
+    <script>
+        // 创建海洋气泡效果
+        document.addEventListener('DOMContentLoaded', function () {
+            const oceanBg = document.getElementById('ocean-bg');
+            const bubbleCount = window.innerWidth > 768 ? 30 : 20; // 根据屏幕尺寸调整气泡数量
+
+            for (let i = 0; i < bubbleCount; i++) {
+                createBubble();
+            }
+
+            function createBubble() {
+                const bubble = document.createElement('div');
+                bubble.classList.add('bubble');
+
+                // 随机大小和位置
+                const size = Math.random() * 30 + 8;
+                const posX = Math.random() * 100;
+                const delay = Math.random() * 15;
+                const duration = Math.random() * 12 + 18;
+
+                bubble.style.width = `${size}px`;
+                bubble.style.height = `${size}px`;
+                bubble.style.left = `${posX}%`;
+                bubble.style.animationDelay = `${delay}s`;
+                bubble.style.animationDuration = `${duration}s`;
+
+                oceanBg.appendChild(bubble);
+
+                // 气泡消失后重新创建，实现持续效果
+                setTimeout(() => {
+                    bubble.remove();
+                    createBubble();
+                }, duration * 1000);
+            }
+
+            // 添加波浪动画
+            const waves = document.querySelectorAll('.wave');
+            waves.forEach((wave, index) => {
+                wave.style.animationDelay = `${index * 3}s`;
+            });
+
+            // 导航栏滚动效果
+            const navContainer = document.getElementById('nav-container');
+            window.addEventListener('scroll', function () {
+                if (window.scrollY > 50) {
+                    navContainer.style.padding = '10px 20px';
+                    navContainer.style.boxShadow = '0 4px 15px rgba(0, 0, 0, 0.3)';
+                } else {
+                    navContainer.style.padding = '15px 20px';
+                    navContainer.style.boxShadow = 'none';
+                }
+            });
+
+            // 移动端菜单
+            const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+            const navLinks = document.getElementById('nav-links');
+
+            mobileMenuBtn.addEventListener('click', function () {
+                navLinks.classList.toggle('active');
+                mobileMenuBtn.innerHTML = navLinks.classList.contains('active') ?
+                    '<i class="fas fa-times"></i>' : '<i class="fas fa-bars"></i>';
+            });
+
+            // 平滑滚动
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+
+                    const targetId = this.getAttribute('href');
+                    if (targetId === '#') {
+                        window.scrollTo({
+                            top: 0,
+                            behavior: 'smooth'
+                        });
+                    } else {
+                        const targetElement = document.querySelector(targetId);
+                        if (targetElement) {
+                            window.scrollTo({
+                                top: targetElement.offsetTop - 80,
+                                behavior: 'smooth'
+                            });
+                        }
+                    }
+
+                    // 关闭移动端菜单
+                    if (navLinks.classList.contains('active')) {
+                        navLinks.classList.remove('active');
+                        mobileMenuBtn.innerHTML = '<i class="fas fa-bars"></i>';
+                    }
+                });
+            });
+
+            // 回到顶部按钮
+            const backToTopBtn = document.getElementById('back-to-top');
+
+            window.addEventListener('scroll', function () {
+                if (window.scrollY > 300) {
+                    backToTopBtn.classList.add('visible');
+                } else {
+                    backToTopBtn.classList.remove('visible');
+                }
+
+                // 视觉锚点动画
+                const anchorCards = document.querySelectorAll('.anchor-card');
+                anchorCards.forEach((card, index) => {
+                    const cardTop = card.getBoundingClientRect().top;
+                    const cardVisible = 150;
+
+                    if (cardTop < window.innerHeight - cardVisible) {
+                        card.style.animation = `fadeInUp 0.8s ease forwards ${0.2 + index * 0.1}s`;
+                    }
+                });
+            });
+
+            // 使用Intersection Observer优化滚动动画
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = 1;
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, observerOptions);
+
+            document.querySelectorAll('.character-image-container, .character-info-container, .skills-container, .visual-anchors, footer')
+                .forEach(element => {
+                    observer.observe(element);
+                });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>个人主页 | OC角色展示</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3B82F6',
+                        secondary: '#6366F1',
+                        accent: '#EC4899',
+                        dark: '#1E293B',
+                        light: '#F8FAFC',
+                        ocean: '#0a192f',
+                        moonlight: '#64feda'
+                    },
+                    fontFamily: {
+                        inter: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .text-shadow {
+                text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            }
+            .transition-custom {
+                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            }
+            .bg-gradient-custom {
+                background: linear-gradient(135deg, #3B82F6 0%, #6366F1 100%);
+            }
+            .ocean-gradient {
+                background: linear-gradient(135deg, #0a192f, #0c2d48);
+            }
+            .wave {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                width: 100%;
+                height: 100px;
+                background-size: cover;
+                background-repeat: no-repeat;
+                z-index: 2;
+                opacity: 0.7;
+                animation: wave 20s infinite linear;
+            }
+            @keyframes wave {
+                0% { background-position-x: 0; }
+                100% { background-position-x: 1200px; }
+            }
+        }
+    </style>
+</head>
+<body class="font-inter bg-gray-50 text-dark min-h-screen flex flex-col">
+    <!-- 海洋装饰元素 -->
+    <div class="ocean-decoration fixed w-full h-full top-0 left-0 z-0 pointer-events-none overflow-hidden">
+        <!-- 气泡将通过JS生成 -->
+    </div>
+    <div class="wave" style="background-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 1200 120" xmlns="http://www.w3.org/2000/svg" fill="%231d4e89"><path d="M0 0v46.29c47.79 22.2 103.59 32.17 158 28 70.36-5.37 136.33-33.31 206.8-37.5 73.84-4.36 147.54 16.88 218.2 35.26 69.27 18 138.3 24.88 209.4 13.08 36.15-6 69.85-17.84 104.45-29.34C989.49 25 1113-14.29 1200 52.47V0z" opacity=".25" /></svg>"></div>
+    <div class="wave" style="background-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 1200 120" xmlns="http://www.w3.org/2000/svg" fill="%2364feda"><path d="M0 0v46.29c47.79 22.2 103.59 32.17 158 28 70.36-5.37 136.33-33.31 206.8-37.5 73.84-4.36 147.54 16.88 218.2 35.26 69.27 18 138.3 24.88 209.4 13.08 36.15-6 69.85-17.84 104.45-29.34C989.49 25 1113-14.29 1200 52.47V0z" opacity=".25" /></svg>"></div>
+
+    <!-- 导航栏 -->
+    <header id="navbar" class="fixed top-0 left-0 w-full bg-white/90 backdrop-blur-md shadow-sm z-50 transition-all duration-300">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16 md:h-20">
+                <div class="flex items-center">
+                    <span class="text-primary font-bold text-xl md:text-2xl tracking-tight">个人空间</span>
+                </div>
+                <nav class="hidden md:flex space-x-8">
+                    <a href="#intro" class="text-dark hover:text-primary font-medium transition-colors duration-200 py-2 border-b-2 border-primary">介绍</a>
+                    <a href="#album" class="text-dark hover:text-primary font-medium transition-colors duration-200 py-2 border-b-2 border-transparent">专辑</a>
+                    <a href="#oc" class="text-dark hover:text-primary font-medium transition-colors duration-200 py-2 border-b-2 border-transparent">OC</a>
+                    <a href="#other" class="text-dark hover:text-primary font-medium transition-colors duration-200 py-2 border-b-2 border-transparent">其他</a>
+                </nav>
+                <div class="md:hidden">
+                    <button id="menu-toggle" class="text-dark hover:text-primary focus:outline-none">
+                        <i class="fa fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- 移动端菜单 -->
+        <div id="mobile-menu" class="md:hidden hidden bg-white shadow-lg absolute w-full">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <a href="#intro" class="block px-3 py-2 rounded-md text-base font-medium text-primary bg-blue-50">介绍</a>
+                <a href="#album" class="block px-3 py-2 rounded-md text-base font-medium text-dark hover:text-primary hover:bg-gray-50">专辑</a>
+                <a href="#oc" class="block px-3 py-2 rounded-md text-base font-medium text-dark hover:text-primary hover:bg-gray-50">OC</a>
+                <a href="#other" class="block px-3 py-2 rounded-md text-base font-medium text-dark hover:text-primary hover:bg-gray-50">其他</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- 主要内容 -->
+    <main class="flex-grow pt-16 md:pt-20 relative z-10">
+        <!-- 介绍部分 -->
+        <section id="intro" class="py-16 md:py-24 bg-gradient-to-b from-blue-50 to-white">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="max-w-4xl mx-auto text-center">
+                    <h2 class="text-[clamp(2rem,5vw,3.5rem)] font-bold text-dark mb-6 text-shadow">关于我</h2>
+                    <div class="w-20 h-1 bg-primary mx-auto mb-10 rounded-full"></div>
+                    <div class="prose prose-lg max-w-none">
+                        <p class="text-lg text-gray-700 mb-6">你好！我是一个对创作充满热情的人，喜欢探索各种创意领域。这里是我的个人主页，展示我的作品和想法。</p>
+                        <p class="text-lg text-gray-700 mb-6">我擅长多种创作形式，包括绘画、设计和写作。我的作品风格多样，从写实到抽象，从传统到现代，都有涉猎。</p>
+                        <p class="text-lg text-gray-700">通过这个主页，我希望能够与更多志同道合的人交流，分享我的创作历程和灵感。</p>
+                    </div>
+                    <div class="mt-12 flex flex-wrap justify-center gap-4">
+                        <a href="#album" class="px-6 py-3 bg-primary hover:bg-primary/90 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+                            <i class="fa fa-th-large mr-2"></i>查看专辑
+                        </a>
+                        <a href="#contact" class="px-6 py-3 bg-white hover:bg-gray-50 text-primary border border-primary rounded-full shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
+                            <i class="fa fa-envelope mr-2"></i>联系我
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 专辑部分 -->
+        <section id="album" class="py-16 md:py-24 bg-white">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-16">
+                    <h2 class="text-[clamp(2rem,5vw,3.5rem)] font-bold text-dark mb-6 text-shadow">我的专辑</h2>
+                    <div class="w-20 h-1 bg-primary mx-auto mb-4 rounded-full"></div>
+                    <p class="text-lg text-gray-700 max-w-2xl mx-auto">这里展示了我创作的各类专辑，每一个专辑都代表了一个主题或创作阶段。点击图片可以查看更多细节。</p>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- 专辑卡片1 -->
+                    <div class="group relative overflow-hidden rounded-xl shadow-lg hover:shadow-2xl transition-all duration-500 bg-white">
+                        <div class="aspect-w-4 aspect-h-3 overflow-hidden">
+                            <img src="https://picsum.photos/seed/album1/800/600" alt="自然风景摄影集封面" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700 ease-in-out">
+                        </div>
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent opacity-70 group-hover:opacity-80 transition-opacity duration-300"></div>
+                        <div class="absolute bottom-0 left-0 p-6 w-full">
+                            <h3 class="text-xl font-bold text-white mb-2 group-hover:text-primary transition-colors duration-300">自然风景摄影集</h3>
+                            <p class="text-white/90 mb-4">记录大自然的壮丽景色和细腻之美</p>
+                            <a href="#" class="inline-flex items-center text-white group-hover:text-primary transition-colors duration-300">
+                                查看详情 <i class="fa fa-arrow-right ml-2 transform group-hover:translate-x-1 transition-transform duration-300"></i>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- 专辑卡片2 -->
+                    <div class="group relative overflow-hidden rounded-xl shadow-lg hover:shadow-2xl transition-all duration-500 bg-white">
+                        <div class="aspect-w-4 aspect-h-3 overflow-hidden">
+                            <img src="https://picsum.photos/seed/album2/800/600" alt="城市印象绘画集封面" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700 ease-in-out">
+                        </div>
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent opacity-70 group-hover:opacity-80 transition-opacity duration-300"></div>
+                        <div class="absolute bottom-0 left-0 p-6 w-full">
+                            <h3 class="text-xl font-bold text-white mb-2 group-hover:text-primary transition-colors duration-300">城市印象绘画集</h3>
+                            <p class="text-white/90 mb-4">用画笔描绘城市的独特魅力和生活气息</p>
+                            <a href="#" class="inline-flex items-center text-white group-hover:text-primary transition-colors duration-300">
+                                查看详情 <i class="fa fa-arrow-right ml-2 transform group-hover:translate-x-1 transition-transform duration-300"></i>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- 专辑卡片3 -->
+                    <div class="group relative overflow-hidden rounded-xl shadow-lg hover:shadow-2xl transition-all duration-500 bg-white">
+                        <div class="aspect-w-4 aspect-h-3 overflow-hidden">
+                            <img src="https://picsum.photos/seed/album3/800/600" alt="抽象艺术作品集封面" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700 ease-in-out">
+                        </div>
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent opacity-70 group-hover:opacity-80 transition-opacity duration-300"></div>
+                        <div class="absolute bottom-0 left-0 p-6 w-full">
+                            <h3 class="text-xl font-bold text-white mb-2 group-hover:text-primary transition-colors duration-300">抽象艺术作品集</h3>
+                            <p class="text-white/90 mb-4">探索色彩、形状和情感的抽象表达</p>
+                            <a href="#" class="inline-flex items-center text-white group-hover:text-primary transition-colors duration-300">
+                                查看详情 <i class="fa fa-arrow-right ml-2 transform group-hover:translate-x-1 transition-transform duration-300"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-center mt-12">
+                    <a href="#" class="inline-flex items-center px-6 py-3 bg-primary hover:bg-primary/90 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+                        查看更多专辑 <i class="fa fa-long-arrow-right ml-2"></i>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- OC部分 -->
+        <section id="oc" class="py-16 md:py-24 bg-gray-50">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-16">
+                    <h2 class="text-[clamp(2rem,5vw,3.5rem)] font-bold text-dark mb-6 text-shadow">原创角色</h2>
+                    <div class="w-20 h-1 bg-primary mx-auto mb-4 rounded-full"></div>
+                    <p class="text-lg text-gray-700 max-w-2xl mx-auto">这些是我创造的原创角色，每个角色都有自己的故事和个性。</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- OC卡片1 - 苏晴 -->
+                    <div class="bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 ocean-gradient text-white">
+                        <div class="aspect-w-1 aspect-h-1 overflow-hidden">
+                            <div class="w-full h-full bg-gray-200 border-2 border-dashed rounded-xl flex items-center justify-center">
+                                <i class="fa fa-user text-4xl text-gray-400"></i>
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <div class="flex justify-between items-center mb-3">
+                                <h3 class="text-xl font-bold">苏晴</h3>
+                                <span class="px-3 py-1 bg-blue-100 text-primary text-sm rounded-full">主角</span>
+                            </div>
+                            <p class="mb-4">来自汐湾镇的月光少女，拥有与海洋的神秘联系。在深夜的海岸线徘徊，收集被潮汐带来的小物件，守护着海洋的平衡。</p>
+                            <div class="flex flex-wrap gap-2 mb-4">
+                                <span class="px-2 py-1 bg-blue-900/50 text-moonlight text-xs rounded-full">月汐之血</span>
+                                <span class="px-2 py-1 bg-blue-900/50 text-moonlight text-xs rounded-full">海洋守护者</span>
+                                <span class="px-2 py-1 bg-blue-900/50 text-moonlight text-xs rounded-full">神秘</span>
+                            </div>
+                            <a href="oc-directory.html#suqing" class="inline-flex items-center text-moonlight hover:text-moonlight/80 font-medium">
+                                查看角色故事 <i class="fa fa-angle-right ml-1"></i>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- OC卡片2 -->
+                    <div class="bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2">
+                        <div class="aspect-w-1 aspect-h-1 overflow-hidden">
+                            <img src="https://picsum.photos/seed/oc2/600/600" alt="原创角色B形象" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500">
+                        </div>
+                        <div class="p-6">
+                            <div class="flex justify-between items-center mb-3">
+                                <h3 class="text-xl font-bold text-dark">月影</h3>
+                                <span class="px-3 py-1 bg-purple-100 text-purple-600 text-sm rounded-full">配角</span>
+                            </div>
+                            <p class="text-gray-600 mb-4">一位神秘的夜行者，精通暗影魔法，似乎知道关于星辰家人失踪的秘密。</p>
+                            <div class="flex flex-wrap gap-2 mb-4">
+                                <span class="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded-full">神秘</span>
+                                <span class="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded-full">独立</span>
+                                <span class="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded-full">聪明</span>
+                            </div>
+                            <a href="#" class="inline-flex items-center text-primary hover:text-primary/80 font-medium">
+                                查看角色故事 <i class="fa fa-angle-right ml-1"></i>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- OC卡片3 -->
+                    <div class="bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2">
+                        <div class="aspect-w-1 aspect-h-1 overflow-hidden">
+                            <img src="https://picsum.photos/seed/oc3/600/600" alt="原创角色C形象" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500">
+                        </div>
+                        <div class="p-6">
+                            <div class="flex justify-between items-center mb-3">
+                                <h3 class="text-xl font-bold text-dark">风语者</h3>
+                                <span class="px-3 py-1 bg-green-100 text-green-600 text-sm rounded-full">盟友</span>
+                            </div>
+                            <p class="text-gray-600 mb-4">古老部落的最后一位传人，能够与自然沟通，帮助星辰解开旅途中的谜题。</p>
+                            <div class="flex flex-wrap gap-2 mb-4">
+                                <span class="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded-full">智慧</span>
+                                <span class="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded-full">平和</span>
+                                <span class="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded-full">有洞察力</span>
+                            </div>
+                            <a href="#" class="inline-flex items-center text-primary hover:text-primary/80 font-medium">
+                                查看角色故事 <i class="fa fa-angle-right ml-1"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-center mt-12">
+                    <a href="oc-directory.html" class="inline-flex items-center px-6 py-3 bg-white hover:bg-gray-50 text-primary border border-primary rounded-full shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
+                        查看所有原创角色 <i class="fa fa-user-circle ml-2"></i>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- 其他部分 -->
+        <section id="other" class="py-16 md:py-24 bg-white">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-16">
+                    <h2 class="text-[clamp(2rem,5vw,3.5rem)] font-bold text-dark mb-6 text-shadow">其他内容</h2>
+                    <div class="w-20 h-1 bg-primary mx-auto mb-4 rounded-full"></div>
+                    <p class="text-lg text-gray-700 max-w-2xl mx-auto">这里展示了我的其他创作和兴趣，包括文章、视频和更多内容。</p>
+                </div>
+            </div>
+        </section>
+        
+        <!-- 联系部分 -->
+        <section id="contact" class="py-16 bg-gray-50">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-12">
+                    <h2 class="text-[clamp(1.75rem,3vw,2.5rem)] font-bold text-dark mb-4">联系我们</h2>
+                    <p class="text-gray-700 max-w-2xl mx-auto">如果您有任何问题或建议，欢迎通过以下方式联系我们</p>
+                </div>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 max-w-4xl mx-auto">
+                    <div>
+                        <form class="space-y-6">
+                            <div>
+                                <label for="name" class="block text-sm font-medium text-gray-700 mb-1">姓名</label>
+                                <input type="text" id="name" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all" placeholder="请输入您的姓名">
+                            </div>
+                            
+                            <div>
+                                <label for="email" class="block text-sm font-medium text-gray-700 mb-1">邮箱</label>
+                                <input type="email" id="email" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all" placeholder="请输入您的邮箱">
+                            </div>
+                            
+                            <div>
+                                <label for="subject" class="block text-sm font-medium text-gray-700 mb-1">主题</label>
+                                <input type="text" id="subject" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all" placeholder="请输入消息主题">
+                            </div>
+                            
+                            <div>
+                                <label for="message" class="block text-sm font-medium text-gray-700 mb-1">消息</label>
+                                <textarea id="message" rows="5" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all" placeholder="请输入您的消息内容"></textarea>
+                            </div>
+                            
+                            <button type="submit" class="w-full px-6 py-3 bg-primary text-white rounded-lg font-medium hover:bg-primary/90 transition-all transform hover:-translate-y-1 shadow-lg hover:shadow-xl">
+                                发送消息
+                            </button>
+                        </form>
+                    </div>
+                    
+                    <div class="bg-white rounded-2xl p-8 shadow-xl">
+                        <h3 class="text-xl font-bold text-dark mb-6">联系方式</h3>
+                        
+                        <div class="space-y-6">
+                            <div class="flex items-start">
+                                <div class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary mr-4 flex-shrink-0">
+                                    <i class="fa fa-envelope text-xl"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-lg font-medium mb-1">邮箱</h4>
+                                    <p class="text-gray-700">contact@example.com</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start">
+                                <div class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary mr-4 flex-shrink-0">
+                                    <i class="fa fa-phone text-xl"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-lg font-medium mb-1">电话</h4>
+                                    <p class="text-gray-700">+86 123 4567 8901</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start">
+                                <div class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary mr-4 flex-shrink-0">
+                                    <i class="fa fa-weixin text-xl"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-lg font-medium mb-1">微信</h4>
+                                    <p class="text-gray-700">wechat_username</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-8">
+                            <h4 class="text-lg font-medium mb-4">关注我们</h4>
+                            <div class="flex space-x-4">
+                                <a href="#" class="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center hover:bg-primary/90 transition-all">
+                                    <i class="fa fa-weibo"></i>
+                                </a>
+                                <a href="#" class="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center hover:bg-primary/90 transition-all">
+                                    <i class="fa fa-wechat"></i>
+                                </a>
+                                <a href="#" class="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center hover:bg-primary/90 transition-all">
+                                    <i class="fa fa-instagram"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="bg-dark text-white py-12 relative z-10">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div class="md:col-span-2">
+                    <h3 class="text-xl font-bold mb-4">个人空间</h3>
+                    <p class="text-gray-400 mb-6 max-w-md">这里展示了我的创作作品和个人历程，希望能给你带来一些启发和灵感。</p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors duration-200">
+                            <i class="fa fa-weibo"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors duration-200">
+                            <i class="fa fa-instagram"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors duration-200">
+                            <i class="fa fa-behance"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors duration-200">
+                            <i class="fa fa-dribbble"></i>
+                        </a>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="text-lg font-medium mb-4">快速链接</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#intro" class="text-gray-400 hover:text-white transition-colors duration-200">介绍</a></li>
+                        <li><a href="#album" class="text-gray-400 hover:text-white transition-colors duration-200">专辑</a></li>
+                        <li><a href="#oc" class="text-gray-400 hover:text-white transition-colors duration-200">OC</a></li>
+                        <li><a href="#other" class="text-gray-400 hover:text-white transition-colors duration-200">其他内容</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-lg font-medium mb-4">联系方式</h4>
+                    <ul class="space-y-2">
+                        <li class="flex items-center">
+                            <i class="fa fa-envelope-o mr-2 text-gray-400"></i>
+                            <span class="text-gray-400">contact@example.com</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fa fa-phone mr-2 text-gray-400"></i>
+                            <span class="text-gray-400">+86 123 4567 8901</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fa fa-weixin mr-2 text-gray-400"></i>
+                            <span class="text-gray-400">wechat_username</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-gray-800 mt-10 pt-6 text-center text-gray-500 text-sm">
+                <p>&copy; 2023 个人空间. 保留所有权利.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 回到顶部按钮 -->
+    <a href="#" class="back-to-top fixed bottom-8 right-8 w-12 h-12 bg-primary text-white rounded-full flex items-center justify-center shadow-lg hover:shadow-xl transition-all opacity-0 invisible z-50">
+        <i class="fa fa-arrow-up"></i>
+    </a>
+
+    <script>
+        // 导航栏滚动效果
+        window.addEventListener('scroll', function() {
+            const navbar = document.getElementById('navbar');
+            const backToTop = document.querySelector('.back-to-top');
+            
+            if (window.scrollY > 50) {
+                navbar.classList.add('shadow-md');
+                navbar.classList.remove('shadow-sm');
+            } else {
+                navbar.classList.remove('shadow-md');
+                navbar.classList.add('shadow-sm');
+            }
+            
+            // 显示/隐藏回到顶部按钮
+            if (window.scrollY > 300) {
+                backToTop.classList.add('opacity-100', 'visible');
+                backToTop.classList.remove('opacity-0', 'invisible');
+            } else {
+                backToTop.classList.remove('opacity-100', 'visible');
+                backToTop.classList.add('opacity-0', 'invisible');
+            }
+        });
+
+        // 移动端菜单切换
+        document.getElementById('menu-toggle').addEventListener('click', function() {
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // 平滑滚动
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                
+                if (targetId === '#') {
+                    window.scrollTo({
+                        top: 0,
+                        behavior: 'smooth'
+                    });
+                } else {
+                    const targetElement = document.querySelector(targetId);
+                    if (targetElement) {
+                        window.scrollTo({
+                            top: targetElement.offsetTop - 80,
+                            behavior: 'smooth'
+                        });
+                    }
+                }
+                
+                // 关闭移动端菜单
+                document.getElementById('mobile-menu').classList.add('hidden');
+            });
+        });
+        
+        // 创建海洋气泡效果
+        document.addEventListener('DOMContentLoaded', function () {
+            const oceanBg = document.querySelector('.ocean-decoration');
+            const bubbleCount = window.innerWidth > 768 ? 30 : 15;
+            
+            for (let i = 0; i < bubbleCount; i++) {
+                createBubble();
+            }
+            
+            function createBubble() {
+                const bubble = document.createElement('div');
+                bubble.classList.add('bubble');
+                bubble.style.position = 'absolute';
+                bubble.style.borderRadius = '50%';
+                bubble.style.background = 'rgba(100, 254, 218, 0.1)';
+                bubble.style.boxShadow = '0 0 10px rgba(100, 254, 218, 0.3)';
+                bubble.style.filter = 'blur(0.5px)';
+                
+                // 随机大小和位置
+                const size = Math.random() * 30 + 8;
+                const posX = Math.random() * 100;
+                const delay = Math.random() * 15;
+                const duration = Math.random() * 12 + 18;
+                
+                bubble.style.width = `${size}px`;
+                bubble.style.height = `${size}px`;
+                bubble.style.left = `${posX}%`;
+                bubble.style.animation = `float ${duration}s infinite linear ${delay}s`;
+                
+                oceanBg.appendChild(bubble);
+                
+                // 气泡消失后重新创建
+                setTimeout(() => {
+                    bubble.remove();
+                    createBubble();
+                }, duration * 1000);
+            }
+            
+            // 定义浮动动画
+            const style = document.createElement('style');
+            style.innerHTML = `
+                @keyframes float {
+                    0% {
+                        transform: translateY(100vh) scale(0.2);
+                        opacity: 0;
+                    }
+                    10% {
+                        opacity: 0.3;
+                    }
+                    90% {
+                        opacity: 0.2;
+                    }
+                    100% {
+                        transform: translateY(-100px) scale(1.5);
+                        opacity: 0;
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+            
+            // 波浪动画
+            const waves = document.querySelectorAll('.wave');
+            waves.forEach((wave, index) => {
+                wave.style.animationDelay = `${index * 3}s`;
+            });
+        });
+    </script>
+</body>
+</html>
